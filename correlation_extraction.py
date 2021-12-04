@@ -81,10 +81,11 @@ combined_data = np.empty((0, 4))
 
 for key, df_combined in time_series_data.items():
     time_name = key
-    ms_Vx = df_combined.loc[df_combined['X'] == 320 & df_combined['X'] == 292]["u"]
-    ms_Vy = df_combined.loc[df_combined['X'] == 320 & df_combined['X'] == 292]["v"]
-    hdr_Vx = df_combined.loc[df_combined['X'] == 320 & df_combined['X'] == 292]["Vx"]
-    hdr_Vy = df_combined.loc[df_combined['X'] == 320 & df_combined['X'] == 292]["Vy"]
+    df_combined = df_combined.set_index(["x", "y"])
+    ms_Vx = df_combined.loc[(324, 300)]["u"]
+    ms_Vy = df_combined.loc[(324, 300)]["v"]
+    hdr_Vx = df_combined.loc[(324, 300)]["Vx"]
+    hdr_Vy = df_combined.loc[(324, 300)]["Vy"]
     row_data = np.array([[ms_Vx, ms_Vy, hdr_Vx, hdr_Vy]])
     combined_data = np.append(combined_data, row_data, axis = 0)
 

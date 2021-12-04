@@ -26,7 +26,7 @@ def func( args ):
 
     # typical parameters:
     window_size = 16 #pixels
-    overlap = 12 # pixels
+    overlap = 14 # pixels
 
     # Read the files
     im_a  = tools.imread( file_a )
@@ -45,6 +45,7 @@ def func( args ):
     u, v, mask = validation.sig2noise_val( u, v, sig2noise, threshold = 1.05)
     u, v = filters.replace_outliers( u, v, method='localmean', max_iter = 5, kernel_size = 3)
 	
+    x, y, u, v = tools.transform_coordinates(x, y, u, v)
 	# save to a file using the original filename and the counter
     tools.save(x, y, u, v, mask, os.path.join(rootdir, (filename+'_%05d.txt')), fmt='%8.7f', delimiter='\t')
 	# openpiv.tools.save(x, y, u, v, mask, 'test_masked.txt', fmt='%9.6f', delimiter='\t')
@@ -66,4 +67,4 @@ if __name__ == '__main__':
         if dirnames == []: # lowest directory level
             print(root)
             task = tools.Multiprocesser( data_dir = root, pattern_a = filepattern, pattern_b = None)
-            task.run( func = func, n_cpus = 5 ) #Control your own CPU Core Allocation
+            task.run( func = func, n_cpus = 4 ) #Control your own CPU Core Allocation
