@@ -43,7 +43,7 @@ def func( args ):
 														   sig2noise_method = 'peak2peak')
     x, y = pyprocess.get_coordinates( image_size = im_a.shape, search_area_size = window_size, overlap = overlap )
     u, v, mask = validation.sig2noise_val( u, v, sig2noise, threshold = 1.05)
-    u, v = filters.replace_outliers( u, v, method='localmean', max_iter = 5, kernel_size = 3)
+    u, v = filters.replace_outliers( u, v, method='localmean', max_iter = 3, kernel_size = 3)
 	
     x, y, u, v = tools.transform_coordinates(x, y, u, v)
 	# save to a file using the original filename and the counter

@@ -82,11 +82,27 @@ combined_data = np.empty((0, 4))
 for key, df_combined in time_series_data.items():
     time_name = key
     df_combined = df_combined.set_index(["x", "y"])
-    ms_Vx = df_combined.loc[(324, 300)]["u"]
-    ms_Vy = df_combined.loc[(324, 300)]["v"]
-    hdr_Vx = df_combined.loc[(324, 300)]["Vx"]
-    hdr_Vy = df_combined.loc[(324, 300)]["Vy"]
+    ms_Vx = df_combined.loc[(320, 220)]["u"]
+    ms_Vy = df_combined.loc[(320, 220)]["v"]
+    hdr_Vx = df_combined.loc[(320, 220)]["Vx"]
+    hdr_Vy = df_combined.loc[(320, 220)]["Vy"]
     row_data = np.array([[ms_Vx, ms_Vy, hdr_Vx, hdr_Vy]])
     combined_data = np.append(combined_data, row_data, axis = 0)
 
-np.savetxt("result.csv", combined_data, delimiter="\t")
+df_time_series = pd.DataFrame(combined_data, columns = ["ms_Vx", "ms_Vy", "hdr_Vx", "hdr_Vy"])
+df_time_series["ms_res"] = np.linalg.norm(df_time_series[["ms_Vx","ms_Vy"]].values,axis=1)
+df_time_series["hdr_res"] = np.linalg.norm(df_time_series[["hdr_Vx","hdr_Vy"]].values,axis=1)
+df_time_series["d_Vx"] = df_time_series["ms_Vx"] - df_time_series["hdr_Vx"]
+df_time_series["d_Vy"] = df_time_series["ms_Vy"] - df_time_series["hdr_Vy"]
+df_time_series["d_res"] = df_time_series["ms_res"] - df_time_series["hdr_res"]
+df_time_series["d_relative_Vx"] = df_time_series["d_Vx"] * 100 / df_time_series["hdr_Vx"]
+df_time_series["d_relative_Vy"] = df_time_series["d_Vy"] * 100 / df_time_series["hdr_Vy"]
+df_time_series["d_relative_res"] = df_time_series["d_res"] * 100 / df_time_series["hdr_res"]
+
+df_time_series[["d_Vx", "d_Vy", "d_res", "d_relative_Vx", "d_relative_Vy", "d_relative_res"]].mean().to_csv(
+    "results_mean.csv", sep="\t", header=False)
+
+df_time_series.to_csv("results_aggregate.csv", index=False, sep="\t", float_format='%g')
+(df_time_series.corr()).to_csv("results_correlation.csv", sep="\t", float_format='%g')
+
+# np.savetxt("result.csv", combined_data, delimiter="\t", header="ms_Vx, ms_Vy, hdr_Vx, hdr_Vy")
